@@ -1,4 +1,4 @@
-// Tab functionality
+// these are the tabs in our program, such as tracker, eco guide, and about me
 function showTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(content => {
         content.style.display = 'none';
@@ -21,10 +21,10 @@ function showTab(tabName) {
     }
 }
 
-// Spoonacular API key
+// This is our Api Key
 const apiKey = "6e9067d9242749f6b6b8e1fafc3b26b4";
 
-// Grocery tracker functionality
+// We use this key to access Spoonacular, an Api that provides us with recipes with our selected ingredients.
 function addItem() {
     const name = document.getElementById("itemName").value.trim();
     const qty = document.getElementById("itemQty").value.trim();
@@ -62,6 +62,7 @@ function loadItems() {
         return;
     }
 
+    //This shows the date that the items will expire and it also displays a warning message if the user's groceries will expire in 3 days or less.
     items.forEach((item, index) => {
         const itemDate = new Date(item.expirationDate);
         const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
@@ -90,7 +91,7 @@ function removeItem(index) {
     loadItems();
 }
 
-// Recipe functionality
+//this saves the groceries as variables after saving them using text fields.
 function getRecipes() {
     const items = JSON.parse(localStorage.getItem("groceries") || "[]");
     const ingredients = items.map(item => item.name.toLowerCase());
@@ -111,7 +112,7 @@ function getRecipes() {
                 recipeList.innerHTML = "<p>No recipes found with your current ingredients. Try adding more items to your grocery list.</p>";
                 return;
             }
-
+        //this displays recipes from spoonacular that use the user's ingredients.
             data.forEach(recipe => {
                 recipeList.innerHTML += `
                     <div class="recipe">
@@ -131,14 +132,15 @@ function getRecipes() {
         });
 }
 
-// DOM Content Loaded
+
 document.addEventListener('DOMContentLoaded', function() {
     loadItems();
     
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
-            
+
+            //this displays the different tabs in our website.
             const targetId = this.getAttribute('href').substring(1);
             if (targetId) {
                 if (targetId === 'tracker') {
