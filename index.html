@@ -121,6 +121,50 @@
 
     // Load items on page load
     loadItems();
+
+    function getRecipes() {
+  const apiKey = '6e9067d9242749f6b6b8e1fafc3b26b4'; // Replace this with your real Spoonacular API key
+  const items = JSON.parse(localStorage.getItem("groceries") || "[]");
+  const ingredients = items.map(item => item.name.toLowerCase());
+
+  if (ingredients.length === 0) {
+    alert("Add some groceries first!");
+    return;
+  }
+
+  const recipeList = document.getElementById("recipeList");
+  recipeList.innerHTML = "<p>🔄 Searching for recipes...</p>";
+
+  fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients.join(',')}&number=5&apiKey=${apiKey}`)
+    .then(res => res.json())
+    .then(data => {
+      recipeList.innerHTML = "";
+
+      if (data.length === 0) {
+        recipeList.innerHTML = "<p>No recipes found. Try adding more ingredients.</p>";
+        return;
+      }
+
+      data.forEach(recipe => {
+        const recipeCard = document.createElement("div");
+        recipeCard.className = "recipe";
+
+        recipeCard.innerHTML = `
+          <img src="${recipe.image}" alt="${recipe.title}" />
+          <h3>${recipe.title}</h3>
+          <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\\s+/g, '-')}-${recipe.id}" target="_blank">View Recipe</a>
+        `;
+
+        recipeList.appendChild(recipeCard);
+      });
+    })
+    .catch(err => {
+      console.error("Error fetching recipes:", err);
+      recipeList.innerHTML = "<p>Something went wrong. Try again later.</p>";
+    });
+}
+
+    
   </script>
 </body>
 </html>
