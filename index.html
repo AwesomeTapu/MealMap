@@ -4,29 +4,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MealMap - Grocery Expiry Tracker</title>
-  <link rel="stylesheet" href="MealMap.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    input, button {
+      padding: 10px;
+      margin: 8px 0;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .item {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .warning {
+      color: red;
+      font-weight: bold;
+    }
+    .recipe {
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #ecf0f1;
+      border-radius: 8px;
+    }
+    .recipe h3 {
+      margin: 0 0 5px 0;
+    }
+    .recipe a {
+      text-decoration: none;
+      color: #3498db;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>🥦 MealMap - Grocery Expiry Tracker</h1>
 
-    <div class="form">
-      <input type="text" id="itemName" placeholder="Enter grocery item name" />
-      <input type="number" id="itemQty" placeholder="Quantity" />
-      <input type="number" id="daysUntilExpiry" placeholder="Days until it expires" />
-      <button onclick="addItem()">Add Item</button>
-    </div>
+    <input type="text" id="itemName" placeholder="Enter grocery item name" />
+    <input type="number" id="itemQty" placeholder="Quantity" />
+    <input type="number" id="daysUntilExpiry" placeholder="Days until it expires" />
+    <button onclick="addItem()">Add Item</button>
 
     <h2>📦 My Groceries</h2>
     <div id="groceryList"></div>
 
-    <h2>🍽 Recipes You Can Make</h2>
+    <h2>🍽 Recipes Based on Ingredients</h2>
     <button onclick="getRecipes()">Find Recipes</button>
     <div id="recipeList"></div>
   </div>
 
   <script>
-    const apiKey = 'YOUR_API_KEY'; // Replace this with your Spoonacular API key
+    const apiKey = 'YOUR_API_KEY'; // Replace with your Spoonacular API key
 
     function addItem() {
       const name = document.getElementById("itemName").value.trim();
@@ -62,12 +117,12 @@
       items.forEach((item, index) => {
         const itemDate = new Date(item.expirationDate);
         const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
-        const warning = diffDays <= 3 ? `⚠️ Expires in ${diffDays} day(s)!` : "";
+        const warning = diffDays <= 3 ? `<span class="warning">⚠️ Expires in ${diffDays} day(s)!</span>` : "";
 
         list.innerHTML += `
           <div class="item">
             <strong>${item.name}</strong> (${item.qty})<br>
-            Expiration: ${item.expirationDate} <span class="warning">${warning}</span><br>
+            Expiration: ${item.expirationDate} ${warning}<br>
             <button onclick="removeItem(${index})">Remove</button>
           </div>
         `;
@@ -90,27 +145,33 @@
         return;
       }
 
+      const recipeList = document.getElementById("recipeList");
+      recipeList.innerHTML = "<p>🔄 Searching for recipes...</p>";
+
       fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients.join(',')}&number=5&apiKey=${apiKey}`)
         .then(res => res.json())
         .then(data => {
-          const recipeList = document.getElementById("recipeList");
           recipeList.innerHTML = "";
+          if (data.length === 0) {
+            recipeList.innerHTML = "<p>No recipes found. Try adding more ingredients.</p>";
+            return;
+          }
+
           data.forEach(recipe => {
             recipeList.innerHTML += `
               <div class="recipe">
-                🍲 <strong>${recipe.title}</strong><br>
-                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">View Recipe</a>
+                🍴 <h3>${recipe.title}</h3>
+                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">🔗 View Recipe</a>
               </div>
             `;
           });
         })
         .catch(err => {
           console.error("Error fetching recipes:", err);
-          alert("Failed to fetch recipes. Check your API key.");
+          recipeList.innerHTML = "<p>Something went wrong. Try again later.</p>";
         });
     }
 
-    // Load existing items on page load
     loadItems();
   </script>
 </body>
