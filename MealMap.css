@@ -1,49 +1,56 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f0fff4;
   margin: 0;
   padding: 20px;
 }
 
 .container {
-  max-width: 700px;
+  max-width: 600px;
   margin: auto;
-  background: #fff;
+  background: #ffffff;
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 14px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
 h1, h2 {
   color: #2c3e50;
+  text-align: center;
 }
 
-input, button {
+input {
+  width: 100%;
   padding: 10px;
   margin: 8px 0;
-  width: 100%;
-  box-sizing: border-box;
   font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
 button {
-  background-color: #3498db;
+  background-color: #27ae60;
   color: white;
+  padding: 12px;
   border: none;
   border-radius: 6px;
+  width: 100%;
+  font-size: 16px;
+  margin: 10px 0;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 button:hover {
-  background-color: #2980b9;
+  background-color: #219653;
 }
 
 .item, .recipe {
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  background-color: #ecf0f1;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  text-align: left;
 }
 
 .warning {
@@ -52,6 +59,7 @@ button:hover {
 }
 
 a {
+  color: #27ae60;
   text-decoration: none;
-  color: #3498db;
+  font-weight: bold;
 }
