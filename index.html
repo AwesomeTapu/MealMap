@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Grocery Expiry Tracker</title>
   <style>
     body {
@@ -11,27 +11,29 @@
       margin: 0;
       padding: 20px;
     }
-    h1 {
-      color: #2c3e50;
-    }
     .container {
       max-width: 700px;
       margin: auto;
-      background: white;
+      background: #fff;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      color: #2c3e50;
     }
     input, button {
       padding: 10px;
-      margin: 5px 0;
+      margin: 8px 0;
       width: 100%;
       box-sizing: border-box;
+      font-size: 16px;
     }
     button {
       background-color: #3498db;
       color: white;
       border: none;
+      border-radius: 6px;
       cursor: pointer;
     }
     button:hover {
@@ -45,61 +47,69 @@
       color: red;
       font-weight: bold;
     }
-    .recipe {
-      background: #ecf0f1;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Grocery Expiry Tracker</h1>
-    <input type="text" id="itemName" placeholder="Item name" />
+    <h1>🛒 Grocery Expiry Tracker</h1>
+
+    <input type="text" id="itemName" placeholder="Enter grocery item name" />
     <input type="number" id="itemQty" placeholder="Quantity" />
-    <input type="date" id="itemDate" />
+    <input type="number" id="daysUntilExpiry" placeholder="Days until it expires" />
     <button onclick="addItem()">Add Item</button>
 
-    <h2>My Groceries</h2>
+    <h2>📦 My Groceries</h2>
     <div id="groceryList"></div>
-
-    <h2>What's Cooking?</h2>
-    <div id="recipeSuggestions"></div>
   </div>
 
   <script>
-    const recipes = [
-      {
-        name: "Veggie Stir Fry",
-        ingredients: ["carrot", "broccoli", "onion"],
-        instructions: "Chop veggies and stir fry with soy sauce."
-      },
-      {
-        name: "Banana Pancakes",
-        ingredients: ["banana", "egg", "flour"],
-        instructions: "Mash banana, mix with egg and flour, cook in pan."
-      },
-      {
-        name: "Tomato Pasta",
-        ingredients: ["tomato", "pasta", "garlic"],
-        instructions: "Cook pasta, make tomato sauce, mix and serve."
-      }
-    ];
-
     function addItem() {
-      const name = document.getElementById("itemName").value.toLowerCase();
-      const qty = document.getElementById("itemQty").value;
-      const date = document.getElementById("itemDate").value;
-      if (!name || !qty || !date) return alert("Please fill all fields");
+      const name = document.getElementById("itemName").value.trim();
+      const qty = document.getElementById("itemQty").value.trim();
+      const days = parseInt(document.getElementById("daysUntilExpiry").value.trim());
+
+      if (!name || !qty || isNaN(days)) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      // Calculate expiration date from today + days
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + days);
+      const expDateStr = expirationDate.toISOString().split("T")[0]; // YYYY-MM-DD
 
       const items = JSON.parse(localStorage.getItem("groceries") || "[]");
-      items.push({ name, qty, date });
+      items.push({ name, qty, expirationDate: expDateStr });
       localStorage.setItem("groceries", JSON.stringify(items));
+
+      // Clear fields
       document.getElementById("itemName").value = "";
       document.getElementById("itemQty").value = "";
-      document.getElementById("itemDate").value = "";
+      document.getElementById("daysUntilExpiry").value = "";
+
       loadItems();
+    }
+
+    function loadItems() {
+      const list = document.getElementById("groceryList");
+      list.innerHTML = "";
+      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
+
+      const today = new Date();
+
+      items.forEach((item, index) => {
+        const itemDate = new Date(item.expirationDate);
+        const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
+        const warning = diffDays <= 3 ? `<span class="warning"> ⚠️ Expires in ${diffDays} day(s)!</span>` : "";
+
+        list.innerHTML += `
+          <div class="item">
+            <strong>${item.name}</strong> (${item.qty})<br>
+            Expiration: ${item.expirationDate}${warning}<br>
+            <button onclick="removeItem(${index})">Remove</button>
+          </div>
+        `;
+      });
     }
 
     function removeItem(index) {
@@ -109,46 +119,9 @@
       loadItems();
     }
 
-    function loadItems() {
-      const list = document.getElementById("groceryList");
-      const recipeBox = document.getElementById("recipeSuggestions");
-      list.innerHTML = "";
-      recipeBox.innerHTML = "";
-      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
-
-      const today = new Date();
-      const soonItems = [];
-      const itemNames = items.map(item => item.name);
-
-      items.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-      items.forEach((item, index) => {
-        const itemDate = new Date(item.date);
-        const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
-        const warn = diffDays <= 3 ? `<span class='warning'> - Expires in ${diffDays} day(s)!</span>` : "";
-
-        list.innerHTML += `<div class='item'>
-          <strong>${item.name}</strong> (${item.qty}) - ${item.date}${warn}
-          <button onclick='removeItem(${index})'>Remove</button>
-        </div>`;
-
-        if (diffDays <= 3) soonItems.push(item.name);
-      });
-
-      // Suggest recipes based on items
-      recipes.forEach(recipe => {
-        const match = recipe.ingredients.every(i => itemNames.includes(i));
-        if (soonItems.some(i => recipe.ingredients.includes(i)) && match) {
-          recipeBox.innerHTML += `<div class='recipe'>
-            <strong>${recipe.name}</strong><br/>
-            <em>Ingredients:</em> ${recipe.ingredients.join(", ")}<br/>
-            <em>Instructions:</em> ${recipe.instructions}
-          </div>`;
-        }
-      });
-    }
-
-    window.onload = loadItems;
+    // Load items on page load
+    loadItems();
   </script>
 </body>
 </html>
+
