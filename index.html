@@ -6,7 +6,7 @@
   <title>MealMap - Grocery Expiry Tracker</title>
   <style>
     body {
-      font-family: 'Segoe UI Emoji', Arial, sans-serif;
+      font-family: Arial, sans-serif;
       background-color: #f4f4f9;
       margin: 0;
       padding: 20px;
@@ -51,10 +51,9 @@
       margin-top: 10px;
       background: #fdfdfd;
     }
-    .recipe-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin: 5px 0;
+    .recipe img {
+      max-width: 100%;
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -65,18 +64,18 @@
     <input type="text" id="itemName" placeholder="Enter grocery item name" />
     <input type="number" id="itemQty" placeholder="Quantity" />
     <input type="number" id="daysUntilExpiry" placeholder="Days until it expires" />
-    <button onclick="addItem()">➕ Add Item</button>
+    <button onclick="addItem()">Add Item</button>
 
     <h2>📦 My Groceries</h2>
     <div id="groceryList"></div>
 
     <h2>🍽 Recipes Based on Ingredients</h2>
-    <button onclick="getRecipes()">🍳 Find Recipes</button>
+    <button onclick="getRecipes()">Find Recipes</button>
     <div id="recipeList"></div>
   </div>
 
   <script>
-    const apiKey = "6e9067d9242749f6b6b8e1fafc3b26b4"; // Replace with your Spoonacular key
+    const apiKey = "6e9067d9242749f6b6b8e1fafc3b26b4"; // ✅ Use your real key here
 
     function addItem() {
       const name = document.getElementById("itemName").value.trim();
@@ -116,9 +115,9 @@
 
         list.innerHTML += `
           <div class="item">
-            🛒 <strong>${item.name}</strong> (${item.qty})<br>
-            📅 Expiration: ${item.expirationDate} ${warning}<br>
-            <button onclick="removeItem(${index})">🗑 Remove</button>
+            <strong>${item.name}</strong> (${item.qty})<br>
+            Expiration: ${item.expirationDate} ${warning}<br>
+            <button onclick="removeItem(${index})">Remove</button>
           </div>
         `;
       });
@@ -141,32 +140,34 @@
       }
 
       const recipeList = document.getElementById("recipeList");
-      recipeList.innerHTML = "🔄 Searching for recipes...";
+      recipeList.innerHTML = "<p>🔄 Searching for recipes...</p>";
 
       fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients.join(',')}&number=5&apiKey=${apiKey}`)
         .then(res => res.json())
         .then(data => {
           recipeList.innerHTML = "";
           if (data.length === 0) {
-            recipeList.innerHTML = "🙁 No recipes found. Try adding more ingredients.";
+            recipeList.innerHTML = "<p>No recipes found. Try adding more ingredients.</p>";
             return;
           }
 
           data.forEach(recipe => {
             recipeList.innerHTML += `
               <div class="recipe">
-                🍲 <div class="recipe-title">${recipe.title}</div>
-                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">🔗 View Recipe</a>
+                <img src="${recipe.image}" alt="${recipe.title}" />
+                <h3>${recipe.title}</h3>
+                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">View Recipe</a>
               </div>
             `;
           });
         })
         .catch(err => {
           console.error("Error fetching recipes:", err);
-          recipeList.innerHTML = "⚠️ Something went wrong. Try again later.";
+          recipeList.innerHTML = "<p>Something went wrong. Try again later.</p>";
         });
     }
 
+    // Initial load
     loadItems();
   </script>
 </body>
