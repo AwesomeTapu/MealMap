@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grocery Expiry Tracker</title>
+  <title>MealMap - Grocery Expiry Tracker</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI Emoji', Arial, sans-serif;
       background-color: #f4f4f9;
       margin: 0;
       padding: 20px;
@@ -18,9 +18,6 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    h1, h2 {
-      color: #2c3e50;
     }
     input, button {
       padding: 10px;
@@ -48,39 +45,39 @@
       font-weight: bold;
     }
     .recipe {
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 8px;
-      background-color: #fdfdfd;
+      padding: 10px;
+      margin-top: 10px;
+      background: #fdfdfd;
     }
-    .recipe img {
-      width: 100%;
-      border-radius: 6px;
-    }
-    .recipe h3 {
-      margin: 10px 0 5px;
+    .recipe-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 5px 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🛒 Grocery Expiry Tracker</h1>
+    <h1>🥦 MealMap - Grocery Expiry Tracker</h1>
 
     <input type="text" id="itemName" placeholder="Enter grocery item name" />
     <input type="number" id="itemQty" placeholder="Quantity" />
     <input type="number" id="daysUntilExpiry" placeholder="Days until it expires" />
-    <button onclick="addItem()">Add Item</button>
+    <button onclick="addItem()">➕ Add Item</button>
 
     <h2>📦 My Groceries</h2>
     <div id="groceryList"></div>
 
-    <h2>🍽️ Recipes You Can Make</h2>
-    <button onclick="getRecipes()">Find Recipes</button>
+    <h2>🍽 Recipes Based on Ingredients</h2>
+    <button onclick="getRecipes()">🍳 Find Recipes</button>
     <div id="recipeList"></div>
   </div>
 
   <script>
+    const apiKey = "6e9067d9242749f6b6b8e1fafc3b26b4"; // Replace with your Spoonacular key
+
     function addItem() {
       const name = document.getElementById("itemName").value.trim();
       const qty = document.getElementById("itemQty").value.trim();
@@ -115,13 +112,13 @@
       items.forEach((item, index) => {
         const itemDate = new Date(item.expirationDate);
         const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
-        const warning = diffDays <= 3 ? `<span class="warning"> ⚠️ Expires in ${diffDays} day(s)!</span>` : "";
+        const warning = diffDays <= 3 ? `<span class="warning">⚠️ Expires in ${diffDays} day(s)!</span>` : "";
 
         list.innerHTML += `
           <div class="item">
-            <strong>${item.name}</strong> (${item.qty})<br>
-            Expiration: ${item.expirationDate}${warning}<br>
-            <button onclick="removeItem(${index})">Remove</button>
+            🛒 <strong>${item.name}</strong> (${item.qty})<br>
+            📅 Expiration: ${item.expirationDate} ${warning}<br>
+            <button onclick="removeItem(${index})">🗑 Remove</button>
           </div>
         `;
       });
@@ -135,7 +132,6 @@
     }
 
     function getRecipes() {
-      const apiKey = "6e9067d9242749f6b6b8e1fafc3b26b4"; // Replace this with your real Spoonacular API key
       const items = JSON.parse(localStorage.getItem("groceries") || "[]");
       const ingredients = items.map(item => item.name.toLowerCase());
 
@@ -145,38 +141,32 @@
       }
 
       const recipeList = document.getElementById("recipeList");
-      recipeList.innerHTML = "<p>🔄 Searching for recipes...</p>";
+      recipeList.innerHTML = "🔄 Searching for recipes...";
 
       fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients.join(',')}&number=5&apiKey=${apiKey}`)
         .then(res => res.json())
         .then(data => {
           recipeList.innerHTML = "";
-
           if (data.length === 0) {
-            recipeList.innerHTML = "<p>No recipes found. Try adding more ingredients.</p>";
+            recipeList.innerHTML = "🙁 No recipes found. Try adding more ingredients.";
             return;
           }
 
           data.forEach(recipe => {
-            const recipeCard = document.createElement("div");
-            recipeCard.className = "recipe";
-
-            recipeCard.innerHTML = `
-              <img src="${recipe.image}" alt="${recipe.title}" />
-              <h3>${recipe.title}</h3>
-              <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">View Recipe</a>
+            recipeList.innerHTML += `
+              <div class="recipe">
+                🍲 <div class="recipe-title">${recipe.title}</div>
+                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">🔗 View Recipe</a>
+              </div>
             `;
-
-            recipeList.appendChild(recipeCard);
           });
         })
         .catch(err => {
           console.error("Error fetching recipes:", err);
-          recipeList.innerHTML = "<p>Something went wrong. Try again later.</p>";
+          recipeList.innerHTML = "⚠️ Something went wrong. Try again later.";
         });
     }
 
-    // Load on start
     loadItems();
   </script>
 </body>
