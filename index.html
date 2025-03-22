@@ -1,175 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MealMap</title>
-  <style>
-    body {
-      font-family: Roboto, sans-serif;
-      background-color: #f4f4f9;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    input, button {
-      padding: 10px;
-      margin: 8px 0;
-      width: 100%;
-      box-sizing: border-box;
-      font-size: 16px;
-    }
-    button {
-      background-color: #27ae50;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #27ae63;
-    }
-    .item {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-    .warning {
-      color: red;
-      font-weight: bold;
-    }
-    .recipe {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      margin-top: 10px;
-      background: #fdfdfd;
-    }
-    .recipe img {
-      max-width: 100%;
-      border-radius: 6px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envire - A Better World</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>🥦 MealMap Grocery Tracker 🌱</h1>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-C0VsYbiwUiwLk64RXcWsIApgK2clOs.png" alt="Envire Logo" class="logo">
+                    <h1 class="brand-name">Envire</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#eco-guide">Eco Guide</a></li>
+                        <li><a href="#tracker">Food Tracker</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-    <input type="text" id="itemName" placeholder="Enter grocery item name" />
-    <input type="number" id="itemQty" placeholder="Quantity" />
-    <input type="number" id="daysUntilExpiry" placeholder="Days until it expires" />
-    <button onclick="addItem()">Add Item</button>
+    <main>
+        <!-- [Same main content as before] -->
+        <section class="hero" id="home">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Zxes8SjgrTuaUm7BKLsNBhYWPTgkCp.png" alt="Mountain landscape with reflection in lake" class="hero-image">
+            <div class="container">
+                <h2 class="hero-title">Saving the Environment</h2>
+            </div>
+        </section>
 
-    <h2>🗒️ My Groceries</h2>
-    <div id="groceryList"></div>
+        <section class="content">
+            <div class="container">
+                <div class="about-section">
+                    <h3>Our Mission</h3>
+                    <p>At Envire, we're committed to creating a better world through sustainable practices and environmental education. Established in 2024, our goal is to inspire and empower individuals to make positive changes for our planet.</p>
+                    
+                    <h3>What We Do</h3>
+                    <p>We provide resources, guides, and community initiatives focused on conservation, renewable energy, and sustainable living. Join us in our journey to protect our natural landscapes and create a healthier environment for future generations.</p>
+                    
+                    <div class="tabs">
+                        <button class="tab active" onclick="showTab('about')">About Us</button>
+                        <button class="tab" onclick="showTab('eco-guide')">Eco Guide</button>
+                        <button class="tab" onclick="showTab('tracker')">Food Tracker</button>
+                    </div>
+                    
+                    <div id="about-content" class="tab-content">
+                        <p>Reducing waste and adopting sustainable practices are among the most effective ways to combat climate change. Our resources and tools can help you make environmentally conscious choices in your daily life.</p>
+                    </div>
+                    
+                    <div id="eco-guide-content" class="tab-content" style="display: none;">
+                        <div class="eco-guide-section" id="eco-guide">
+                            <h3>Eco Guide: Sustainable Living Tips</h3>
+                            <p>Our comprehensive guide to living more sustainably and reducing your environmental footprint. Explore these practical tips and resources to make a positive impact on our planet.</p>
+                            
+                            <div class="eco-categories">
+                                <div class="eco-category">
+                                    <div class="eco-category-icon">🏠</div>
+                                    <h4>Home</h4>
+                                    <p>Energy-saving tips and sustainable practices for your household</p>
+                                </div>
+                                <div class="eco-category">
+                                    <div class="eco-category-icon">🥗</div>
+                                    <h4>Food</h4>
+                                    <p>Sustainable eating habits and reducing food waste</p>
+                                </div>
+                                <div class="eco-category">
+                                    <div class="eco-category-icon">👕</div>
+                                    <h4>Fashion</h4>
+                                    <p>Ethical clothing choices and sustainable fashion</p>
+                                </div>
+                            </div>
+                            
+                            <div class="eco-tip">
+                                <h4><span class="eco-tip-icon">💡</span> Energy Saving Tip</h4>
+                                <p>Switch to LED bulbs in your home. They use up to 80% less energy than traditional incandescent bulbs and last up to 25 times longer, saving both energy and money.</p>
+                            </div>
+                            
+                            <div class="eco-tip">
+                                <h4><span class="eco-tip-icon">♻️</span> Recycling Tip</h4>
+                                <p>Rinse containers before recycling them. Food residue can contaminate other recyclables and cause entire batches to be sent to landfill instead of being properly recycled.</p>
+                            </div>
+                            
+                            <div class="eco-tip">
+                                <h4><span class="eco-tip-icon">🌱</span> Sustainable Living Tip</h4>
+                                <p>Start a small herb garden in your kitchen window. Growing your own herbs reduces packaging waste, eliminates transportation emissions, and provides fresh flavors for your meals.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="tracker-content" class="tab-content" style="display: none;">
+                        <div class="tracker-container" id="tracker">
+                            <h2>🥦 MealMap: Reduce Food Waste Tracker 🌱</h2>
+                            <p>Track your groceries to reduce food waste and help the environment. Get notified before your food expires and discover recipes using your ingredients!</p>
+                            
+                            <input type="text" id="itemName" placeholder="Enter grocery item name" />
+                            <input type="number" id="itemQty" placeholder="Quantity" />
+                            <input type="number" id="daysUntilExpiry" placeholder="Days until it expires" />
+                            <button onclick="addItem()">Add Item</button>
+                            
+                            <h3>📦 My Groceries</h3>
+                            <div id="groceryList"></div>
+                            
+                            <div class="recipe-container">
+                                <h3>🍽️ Recipes Based on Your Ingredients</h3>
+                                <p>Discover delicious recipes you can make with the ingredients you already have. Reduce food waste by using items before they expire!</p>
+                                <button onclick="getRecipes()">Find Recipes</button>
+                                <div id="recipeList" class="recipe-grid"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    <h2>🍽 Recipes Based on Ingredients</h2>
-    <button onclick="getRecipes()">Find Recipes</button>
-    <div id="recipeList"></div>
-  </div>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-C0VsYbiwUiwLk64RXcWsIApgK2clOs.png" alt="Envire Logo" class="logo-small">
+                    <p>© 2024 Envire. All rights reserved.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Connect With Us</h4>
+                    <ul>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-  <script>
-    const apiKey = "6e9067d9242749f6b6b8e1fafc3b26b4"; // this is the api key we got from spoonacular
-
-    function addItem() {
-      const name = document.getElementById("itemName").value.trim();
-      const qty = document.getElementById("itemQty").value.trim();
-      const days = parseInt(document.getElementById("daysUntilExpiry").value.trim());
-
-      if (!name || !qty || isNaN(days)) {
-        alert("Please fill in all fields.");
-        return;
-      }
-
-      const expirationDate = new Date();
-      expirationDate.setDate(expirationDate.getDate() + days);
-      const expDateStr = expirationDate.toISOString().split("T")[0];
-
-      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
-      items.push({ name, qty, expirationDate: expDateStr });
-      localStorage.setItem("groceries", JSON.stringify(items));
-
-      document.getElementById("itemName").value = "";
-      document.getElementById("itemQty").value = "";
-      document.getElementById("daysUntilExpiry").value = "";
-
-      loadItems();
-    }
-
-    function loadItems() {
-      const list = document.getElementById("groceryList");
-      list.innerHTML = "";
-      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
-      const today = new Date();
-
-      items.forEach((item, index) => {
-        const itemDate = new Date(item.expirationDate);
-        const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
-        const warning = diffDays <= 3 ? `<span class="warning">⚠️ Expires in ${diffDays} day(s)!</span>` : "";
-
-        list.innerHTML += `
-          <div class="item">
-            <strong>${item.name}</strong> (${item.qty})<br>
-            Expiration: ${item.expirationDate} ${warning}<br>
-            <button onclick="removeItem(${index})">Remove</button>
-          </div>
-        `;
-      });
-    }
-
-    function removeItem(index) {
-      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
-      items.splice(index, 1);
-      localStorage.setItem("groceries", JSON.stringify(items));
-      loadItems();
-    }
-
-    function getRecipes() {
-      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
-      const ingredients = items.map(item => item.name.toLowerCase());
-
-      if (ingredients.length === 0) {
-        alert("Add some groceries first!");
-        return;
-      }
-
-      const recipeList = document.getElementById("recipeList");
-      recipeList.innerHTML = "<p>🔄 Searching for recipes...</p>";
-
-      fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients.join(',')}&number=5&apiKey=${apiKey}`)
-        .then(res => res.json())
-        .then(data => {
-          recipeList.innerHTML = "";
-          if (data.length === 0) {
-            recipeList.innerHTML = "<p>No recipes found. Try adding more ingredients.</p>";
-            return;
-          }
-
-          data.forEach(recipe => {
-            recipeList.innerHTML += `
-              <div class="recipe">
-                <img src="${recipe.image}" alt="${recipe.title}" />
-                <h3>${recipe.title}</h3>
-                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">View Recipe</a>
-              </div>
-            `;
-          });
-        })
-        .catch(err => {
-          console.error("Error fetching recipes:", err);
-          recipeList.innerHTML = "<p>Something went wrong. Try again later.</p>";
-        });
-    }
-
-    // Initial load
-    loadItems();
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
