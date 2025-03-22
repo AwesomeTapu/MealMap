@@ -123,7 +123,7 @@
     loadItems();
 
     function getRecipes() {
-  const apiKey = '6e9067d9242749f6b6b8e1fafc3b26b4'; // Replace this with your real Spoonacular API key
+  const apiKey = 6e9067d9242749f6b6b8e1fafc3b26b4; // Replace this with your real Spoonacular API key
   const items = JSON.parse(localStorage.getItem("groceries") || "[]");
   const ingredients = items.map(item => item.name.toLowerCase());
 
