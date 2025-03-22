@@ -1,1 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MealMap - Grocery Expiry Tracker</title>
+  <link rel="stylesheet" href="MealMap.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🥦 MealMap - Grocery Expiry Tracker</h1>
+    <div class="form">
+      <input type="text" id="itemName" placeholder="Enter grocery item name" />
+      <input type="number" id="itemQty" placeholder="Quantity" />
+      <input type="number" id="daysUntilExpiry" placeholder="Days until it expires" />
+      <button onclick="addItem()">Add Item</button>
+    </div>
 
+    <h2>📦 My Groceries</h2>
+    <div id="groceryList"></div>
+
+    <h2>🍽 Recipes Based on Ingredients</h2>
+    <button onclick="getRecipes()">Find Recipes</button>
+    <div id="recipeList"></div>
+  </div>
+
+  <script>
+    const apiKey = 'YOUR_API_KEY'; // Replace with your Spoonacular API key
+
+    function addItem() {
+      const name = document.getElementById("itemName").value.trim();
+      const qty = document.getElementById("itemQty").value.trim();
+      const days = parseInt(document.getElementById("daysUntilExpiry").value.trim());
+
+      if (!name || !qty || isNaN(days)) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + days);
+      const expDateStr = expirationDate.toISOString().split("T")[0];
+
+      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
+      items.push({ name, qty, expirationDate: expDateStr });
+      localStorage.setItem("groceries", JSON.stringify(items));
+
+      document.getElementById("itemName").value = "";
+      document.getElementById("itemQty").value = "";
+      document.getElementById("daysUntilExpiry").value = "";
+
+      loadItems();
+    }
+
+    function loadItems() {
+      const list = document.getElementById("groceryList");
+      list.innerHTML = "";
+      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
+      const today = new Date();
+
+      items.forEach((item, index) => {
+        const itemDate = new Date(item.expirationDate);
+        const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
+        const warning = diffDays <= 3 ? `<span class="warning">⚠️ Expires in ${diffDays} day(s)!</span>` : "";
+
+        list.innerHTML += `
+          <div class="item">
+            <strong>${item.name}</strong> (${item.qty})<br>
+            Expiration: ${item.expirationDate} ${warning}<br>
+            <button onclick="removeItem(${index})">Remove</button>
+          </div>
+        `;
+      });
+    }
+
+    function removeItem(index) {
+      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
+      items.splice(index, 1);
+      localStorage.setItem("groceries", JSON.stringify(items));
+      loadItems();
+    }
+
+    function getRecipes() {
+      const items = JSON.parse(localStorage.getItem("groceries") || "[]");
+      const ingredients = items.map(item => item.name.toLowerCase());
+
+      if (ingredients.length === 0) {
+        alert("Add some groceries first!");
+        return;
+      }
+
+      fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients.join(',')}&number=5&apiKey=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+          const recipeList = document.getElementById("recipeList");
+          recipeList.innerHTML = "";
+          data.forEach(recipe => {
+            recipeList.innerHTML += `
+              <div class="recipe">
+                <img src="${recipe.image}" alt="${recipe.title}" />
+                <h3>${recipe.title}</h3>
+                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">View Recipe</a>
+              </div>
+            `;
+          });
+        })
+        .catch(err => console.error("Error fetching recipes:", err));
+    }
+
+    loadItems();
+  </script>
+</body>
+</html>
