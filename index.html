@@ -100,13 +100,13 @@
       items.forEach((item, index) => {
         const itemDate = new Date(item.expirationDate);
         const diffDays = Math.ceil((itemDate - today) / (1000 * 60 * 60 * 24));
-        const warning = diffDays <= 3 ? `<span class="warning"> ⚠️ Expires in ${diffDays} day(s)!</span>` : "";
+        const warning = diffDays <= 3 ? `<span class="warning"> Expires in ${diffDays} day(s)!</span>` : "";
 
         list.innerHTML += `
           <div class="item">
             <strong>${item.name}</strong> (${item.qty})<br>
             Expiration: ${item.expirationDate}${warning}<br>
-            <button onclick="removeItem(${index})">Remove</button>
+            <button onclick="removeItem(${index})">Remove</button>`  
           </div>
         `;
       });
