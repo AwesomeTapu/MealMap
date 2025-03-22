@@ -97,8 +97,8 @@
           data.forEach(recipe => {
             recipeList.innerHTML += `
               <div class="recipe">
-                🍲 <strong>${recipe.title}</strong><br>
-                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">View Recipe</a>
+                🍳 <strong>${recipe.title}</strong><br>
+                🔗 <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">View Recipe</a>
               </div>
             `;
           });
@@ -110,4 +110,3 @@
   </script>
 </body>
 </html>
-
