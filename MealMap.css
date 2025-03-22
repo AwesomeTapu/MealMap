@@ -32,16 +32,18 @@ button {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 button:hover {
   background-color: #2980b9;
 }
 
-.item {
+.item, .recipe {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
 .warning {
@@ -49,19 +51,7 @@ button:hover {
   font-weight: bold;
 }
 
-.recipe {
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #ecf0f1;
-  border-radius: 8px;
-}
-
-.recipe h3 {
-  margin: 0 0 5px 0;
-}
-
-.recipe a {
+a {
   text-decoration: none;
   color: #3498db;
-  font-weight: bold;
 }
