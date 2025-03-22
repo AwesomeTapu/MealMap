@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MealMap - Grocery Expiry Tracker</title>
-  <link rel="stylesheet" href="MealMap.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <h1>🛒 Grocery Expiry Tracker</h1>
+
     <div class="form">
       <input type="text" id="itemName" placeholder="Enter grocery item name" />
       <input type="number" id="itemQty" placeholder="Quantity" />
@@ -89,23 +90,35 @@
         return;
       }
 
+      const recipeList = document.getElementById("recipeList");
+      recipeList.innerHTML = "<p>🔄 Searching for recipes...</p>";
+
       fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients.join(',')}&number=5&apiKey=${apiKey}`)
         .then(res => res.json())
         .then(data => {
-          const recipeList = document.getElementById("recipeList");
           recipeList.innerHTML = "";
+
+          if (data.length === 0) {
+            recipeList.innerHTML = "<p>No recipes found. Try adding more ingredients.</p>";
+            return;
+          }
+
           data.forEach(recipe => {
             recipeList.innerHTML += `
               <div class="recipe">
-                🍳 <strong>${recipe.title}</strong><br>
-                🔗 <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">View Recipe</a>
+                🍲 <strong>${recipe.title}</strong><br>
+                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">🔗 View Recipe</a>
               </div>
             `;
           });
         })
-        .catch(err => console.error("Error fetching recipes:", err));
+        .catch(err => {
+          console.error("Error fetching recipes:", err);
+          recipeList.innerHTML = "<p>❌ Something went wrong. Try again later.</p>";
+        });
     }
 
+    // Load items on page load
     loadItems();
   </script>
 </body>
