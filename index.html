@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MealMap - Grocery Expiry Tracker</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -26,7 +26,7 @@
   </div>
 
   <script>
-    const apiKey = 'YOUR_API_KEY'; // Replace with your Spoonacular API key
+    const apiKey = 'YOUR_API_KEY_HERE'; // ⬅️ Replace with your real Spoonacular API key
 
     function addItem() {
       const name = document.getElementById("itemName").value.trim();
@@ -83,9 +83,9 @@
 
     function getRecipes() {
       const items = JSON.parse(localStorage.getItem("groceries") || "[]");
-      const ingredients = items.map(item => item.name.toLowerCase());
+      const ingredients = items.map(item => item.name.toLowerCase()).join(',');
 
-      if (ingredients.length === 0) {
+      if (!ingredients) {
         alert("Add some groceries first!");
         return;
       }
@@ -93,13 +93,15 @@
       const recipeList = document.getElementById("recipeList");
       recipeList.innerHTML = "<p>🔄 Searching for recipes...</p>";
 
-      fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients.join(',')}&number=5&apiKey=${apiKey}`)
-        .then(res => res.json())
+      fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=5&apiKey=${apiKey}`)
+        .then(response => {
+          if (!response.ok) throw new Error("API error");
+          return response.json();
+        })
         .then(data => {
           recipeList.innerHTML = "";
-
           if (data.length === 0) {
-            recipeList.innerHTML = "<p>No recipes found. Try adding more ingredients.</p>";
+            recipeList.innerHTML = "<p>😕 No recipes found.</p>";
             return;
           }
 
@@ -107,19 +109,18 @@
             recipeList.innerHTML += `
               <div class="recipe">
                 🍲 <strong>${recipe.title}</strong><br>
-                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-')}-${recipe.id}" target="_blank">🔗 View Recipe</a>
+                <a href="https://spoonacular.com/recipes/${recipe.title.replace(/\s+/g, '-').toLowerCase()}-${recipe.id}" target="_blank">🔗 View Recipe</a>
               </div>
             `;
           });
         })
         .catch(err => {
-          console.error("Error fetching recipes:", err);
-          recipeList.innerHTML = "<p>❌ Something went wrong. Try again later.</p>";
+          console.error("Fetch error:", err);
+          recipeList.innerHTML = "<p>❌ Failed to load recipes. Check your API key or try again later.</p>";
         });
     }
 
-    // Load items on page load
-    loadItems();
+    window.onload = loadItems;
   </script>
 </body>
 </html>
